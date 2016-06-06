@@ -8,21 +8,27 @@ $(document).on("click", '#addInput', function() {
 	var trainNameEntered = $('#trainName').val().trim();
 	var destinationEntered = $('#destination').val().trim();
 	var frequencyEntered = $('#frequency').val().trim();
-	var nextArrivalEntered = $('#nextArrival').val().trim();
-	console.log("List of things: " + trainNameEntered+ " " + destinationEntered+ " "  + frequencyEntered+ " "  + nextArrivalEntered);
+	var firstTrainDpartEntered = $('#firstTrainDpartTime').val().trim();
+	console.log("List of things: " + trainNameEntered+ " " + destinationEntered+ " "  + frequencyEntered+ " "  + firstTrainDpartEntered);
+
+var tmp=firstTrainDpartEntered.split(":");
+var startTime = new moment({hours:tmp[0], minutes:tmp[1]});
+console.log(startTime);
+//  var startTime = moment() + firstTrainDpartEntered;
+//    console.log(startTime);
 
 	clickData.push({
 		"trainNameFB": trainNameEntered,
 		"destinationFB": destinationEntered,
 		"frequencyFB": frequencyEntered,
-		"nextArrivalFB": nextArrivalEntered
+		"firstTrainDpartFB": startTime
 	})
 
   //clear the entry form
 	trainNameEntered = $('#trainName').val("");
 	destinationEntered = $('#destination').val("");
 	frequencyEntered = $('#frequency').val("");
-	nextArrivalEntered = $('#nextArrival').val("");
+	firstTrainDpartEntered = $('#firstTrainDpartTime').val("");
 	return false;
 });
 
@@ -30,14 +36,17 @@ clickData.on("child_added", function(childSnapshot){
 	var trainNameAppend = childSnapshot.val().trainNameFB;
 	var destinationAppend = childSnapshot.val().destinationFB;
 	var frequencyAppend = childSnapshot.val().frequencyFB;
+  var currentMoment = moment();
+  var startMoment = moment(new firstTrainDpartEntered);
 	var nextArrivalAppend = childSnapshot.val().nextArrivalFB;
+
 	/*var momentMonths = moment(new Date(appendDate));
 	var currentMoment = moment();
 	var howManyMonths = moment().diff(momentMonths, "months");
 	var howMuchPaid = howManyMonths * childSnapshot.val().rateGivenFB;
 	console.log(howManyMonths + " This is the months");
 	console.log(appendName);*/
-	$('#trainSchTable').prepend("<tr><td>" + trainNameAppend + "</td><td>" + destinationAppend + "</td><td>" +  frequencyAppend + "</td><td>" +  nextArrivalAppend + "</td></tr>");
+//	$('#trainSchTable').prepend("<tr><td>" + trainNameAppend + "</td><td>" + destinationAppend + "</td><td>" +  frequencyAppend + "</td><td>" +  nextArrivalAppend + "</td></tr>");
 
 });
 
