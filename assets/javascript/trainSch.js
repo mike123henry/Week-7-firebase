@@ -5,23 +5,23 @@ var startTime;
 
 //var clickData = new Firebase("https://flickering-heat-7798.firebaseio.com/");
 
-$(document).on("click", '#addInput', function() {
+$(document).on("click", '#adminInput', function() {
 	var trainNameEntered = $('#trainName').val().trim();
 	var destinationEntered = $('#destination').val().trim();
 	var frequencyEntered = $('#frequency').val().trim();
 	var firstTrainDpartEntered = $('#firstTrainDpartTime').val().trim();
 	console.log("List of things: " + trainNameEntered+ " " + destinationEntered+ " "  + frequencyEntered+ " "  + firstTrainDpartEntered);
 
-var tmp=firstTrainDpartEntered.split(":");
-startTime = new moment({hours:tmp[0], minutes:tmp[1]});
-console.log(startTime);
+startTime = new moment(firstTrainDpartEntered,'hh:mm');
+console.log('startTime = '+ startTime);
 //  var startTime = moment() + firstTrainDpartEntered;
 //    console.log(startTime);
 
 	clickData.push({
 		"trainNameFB": trainNameEntered,
 		"destinationFB": destinationEntered,
-		"frequencyFB": frequencyEntered
+		"frequencyFB": frequencyEntered,
+		"firstTrainDpartFB": firstTrainDpartEntered
 	})
 //"firstTrainDpartFB": startTime
 
@@ -37,11 +37,27 @@ clickData.on("child_added", function(childSnapshot){
 	var trainNameAppend = childSnapshot.val().trainNameFB;
 	var destinationAppend = childSnapshot.val().destinationFB;
 	var frequencyAppend = childSnapshot.val().frequencyFB;
-	var howManyMinutes = moment().diff(startTime, "minutes");
-	console.log(moment());
-	console.log(howManyMinutes);
+	var firstDepart = childSnapshot.val().firstTrainDpartFB;
+	var firstTrainMath = moment(firstDepart,"hh:mm");
+	var currentTime = moment();
+	var howManyMinutes = currentTime.diff(firstTrainMath, "minutes");
+	var minToNextTrain = firstTrainMath % frequencyAppend;
+	var nextTime =  currentTime.add(minToNextTrain, "minutes");
+	nextTime = moment(nextTime).format("hh:mm")
+
+	console.log("trainNameAppend = "+trainNameAppend);
+	console.log("destinationAppend = "+destinationAppend);
+	console.log("frequencyAppend = "+frequencyAppend);
+	console.log("firstDepart = "+firstDepart);
+	console.log("firstTrainMath = "+firstTrainMath);
+	console.log("currentTime = "+currentTime);
+	console.log("howManyMinutes = "+howManyMinutes);
+	console.log("minToNextTrain = "+minToNextTrain);
+	console.log("nextTime = "+nextTime);
+
+
   //var currentMoment = moment();
-  //var startMoment = moment(new firstTrainDpartEntered);
+  //var startMoment = moment(new firstTrainDpartEntered);var currentTime = moment();
 	//var nextArrivalAppend = childSnapshot.val().nextArrivalFB;
 
 	/*var momentMonths = moment(new Date(appendDate));
@@ -50,7 +66,7 @@ clickData.on("child_added", function(childSnapshot){
 	var howMuchPaid = howManyMonths * childSnapshot.val().rateGivenFB;
 	console.log(howManyMonths + " This is the months");
 	console.log(appendName);*/
-	$('#trainSchTable').prepend("<tr><td>" + trainNameAppend + "</td><td>" + destinationAppend + "</td><td>" +  frequencyAppend + "</td><td>" +  howManyMinutes + "</td></tr>");
+	$('#trainSchTable').prepend("<tr><td>" + trainNameAppend + "</td><td>" + destinationAppend + "</td><td>" +  frequencyAppend + "</td><td>" +  nextTime + "</td><td>" +  minToNextTrain + "</td></tr>");
 
 });
 
