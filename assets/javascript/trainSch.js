@@ -55,4 +55,6 @@ $(document).ready(function() {
 		}
 	}); //end on("child_added"
 
+//crude why to update every minute
+var timerHandle = setInterval(function(){ location.reload(); }, 60000);
 })// end document).ready()
